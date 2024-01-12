@@ -3,10 +3,11 @@ package frc.robot.commands.driving;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DriveConstants;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.util.Dampener;
 
 public class TeleopDrive extends Command {
-    private final DriveTrain driveTrain;
+    private final Drivetrain drivetrain;
 
     private final XboxController controller;
 
@@ -16,8 +17,8 @@ public class TeleopDrive extends Command {
     private Dampener xDampener;
     private Dampener yDampener;
 
-    public TeleopDrive(DriveTrain driveTrain, XboxController controller, int fwdRevAxis, int leftRightAxis) {
-        this.driveTrain = driveTrain;
+    public TeleopDrive(Drivetrain drivetrain, XboxController controller, int fwdRevAxis, int leftRightAxis) {
+        this.drivetrain = drivetrain;
         this.controller = controller;
 
         this.X_AXIS = leftRightAxis;
@@ -25,13 +26,15 @@ public class TeleopDrive extends Command {
 
         this.xDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 6);
         this.yDampener = new Dampener(DriveConstants.CONTROLLER_DEADZONE, 4);
+
+        addRequirements(drivetrain);
     }
 
     @Override
     public void execute() {
-        double y = yDampener.dampen(y) * controller.getRawAxis(Y_AXIS);
-        double x = xDampener.dampen(x) * controller.getRawAxis(X_AXIS);
+        double y = yDampener.dampen(controller.getRawAxis(Y_AXIS));
+        double x = xDampener.dampen(controller.getRawAxis(X_AXIS));
 
-        driveTrain.arcadeDrive(y * 0.85, x * 0.25);
+        drivetrain.arcadeDrive(y * 0.85, x * 0.25);
     }
 }

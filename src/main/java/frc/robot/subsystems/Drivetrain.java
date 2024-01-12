@@ -11,12 +11,18 @@ public class Drivetrain extends SubsystemBase {
     private final VictorSP rightFollower = new VictorSP(CANBus.RIGHT_FOLLOWER);
     private final VictorSP leftFollower = new VictorSP(CANBus.LEFT_FOLLOWER);
 
+    private final SlewRateLimiter translationLimiter = new SlewRateLimiter(3);
+    private final SlewRateLimiter rotationLimiter =  new SlewRateLimiter(2);
+
+    private double targetTranslation;
+    private double targetRotation;
+
+
     public Drivetrain(){
         this.rightMaster.addFollower(this.rightFollower);
         this.leftMaster.addFollower(this.leftFollower);
 
         this.rightMaster.setInverted(true);
-        
     }
     
     public void periodic() {
@@ -34,7 +40,7 @@ public class Drivetrain extends SubsystemBase {
         rightMaster.set(right);
     }
 
-    public vvoid arcadeDrive(double translation, double rotation) {
+    public void arcadeDrive(double translation, double rotation) {
         targetTranslation = translation;
         targetRotation = rotation;
     }
