@@ -34,7 +34,7 @@ public class Drivetrain extends SubsystemBase {
         rightMaster.set(right);
     }
 
-    public vvoid arcadeDrive(double translation, double rotation) {
+    public void arcadeDrive(double translation, double rotation) {
         targetTranslation = translation;
         targetRotation = rotation;
     }
