@@ -4,12 +4,14 @@ import frc.robot.constants.CANBus;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 
 public class Drivetrain extends SubsystemBase {
-    private final VictorSP rightMaster = new VictorSP(CANBus.RIGHT_MASTER);
-    private final VictorSP leftMaster = new VictorSP(CANBus.LEFT_MASTER);
-    private final VictorSP rightFollower = new VictorSP(CANBus.RIGHT_FOLLOWER);
-    private final VictorSP leftFollower = new VictorSP(CANBus.LEFT_FOLLOWER);
+    private final TalonSRX rightMaster = new TalonSRX(CANBus.RIGHT_MASTER);
+    private final TalonSRX leftMaster = new TalonSRX(CANBus.LEFT_MASTER);
+    private final TalonSRX rightFollower = new TalonSRX(CANBus.RIGHT_FOLLOWER);
+    private final TalonSRX leftFollower = new TalonSRX(CANBus.LEFT_FOLLOWER);
 
     private final SlewRateLimiter translationLimiter = new SlewRateLimiter(3);
     private final SlewRateLimiter rotationLimiter =  new SlewRateLimiter(2);
@@ -19,8 +21,8 @@ public class Drivetrain extends SubsystemBase {
 
 
     public Drivetrain(){
-        this.rightMaster.addFollower(this.rightFollower);
-        this.leftMaster.addFollower(this.leftFollower);
+        this.rightFollower.follow(this.rightMaster);
+        this.leftFollower.follow(this.leftMaster);
 
         this.rightMaster.setInverted(true);
     }
@@ -36,8 +38,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     private void setMotors(double left, double right) {
-        leftMaster.set(left);
-        rightMaster.set(right);
+        leftMaster.set(TalonSRXControlMode.PercentOutput, left);
+        rightMaster.set(TalonSRXControlMode.PercentOutput, right);
     }
 
     public void arcadeDrive(double translation, double rotation) {
